@@ -5,6 +5,12 @@
 #ifndef IMAGE_KERNEL_PROCESSING_PROCESSING_H
 #define IMAGE_KERNEL_PROCESSING_PROCESSING_H
 
+//#pragma clang diagnostic push
+//#pragma ide diagnostic ignored "openmp-use-default-none"
+#ifdef _OPENMP
+#include <omp.h> // for OpenMP library functions
+#endif
+
 #include "Image.h"
 #include "Kernel.h"
 
