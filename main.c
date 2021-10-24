@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <malloc.h>
 #include <string.h>
-#include <time.h>
+#include <sys/time.h>
 #include "Image.h"
 #include "Utils.h"
 #include "Kernel.h"
@@ -10,11 +10,11 @@
 /**
  * Min value of kernel dimension to test (MUST be odd)
  */
-const int KERNEL_DIM_MIN = 3;
+const int KERNEL_DIM_MIN = 19;
 /**
  * Max value of kernel dimension to test (MUST be odd)
  */
-const int KERNEL_DIM_MAX = 5;
+const int KERNEL_DIM_MAX = 19;
 /**
  * Step on values of kernel dimension (MUST be even)
  */
@@ -22,7 +22,7 @@ const int KERNEL_DIM_STEP = 2;
 /**
  * Image dimension to test: 4K, 5K, 6K or 7K
  */
-const char IMAGE_DIMENSION[] = "4K";
+const char IMAGE_DIMENSION[] = "7K";
 /**
  * Number of image of each dimension to test (max 3)
  */
@@ -47,7 +47,7 @@ int main() {
     double *times = (double *) malloc(sizeof(double) * (KERNEL_DIM_MAX - KERNEL_DIM_MIN + 1));
 
     for (int k = KERNEL_DIM_MIN; k <= KERNEL_DIM_MAX; k += KERNEL_DIM_STEP) {
-        double cumulativeSec = 0;
+        long cumulative_ms = 0;
         Kernel *krn = Kernel_gaussianBlur(k);
         for (int imageIndex = 1; imageIndex <= IMAGE_QUANTITY; imageIndex++) {
             char *inFilename = (char *) malloc(sizeof(char) * 100);
@@ -58,13 +58,18 @@ int main() {
             for (int i = 0; i < REPETITIONS; i++) {
                 Image_delete(res); // to free memory of previous result and avoid error
 
-                clock_t start = clock();
-                res = process(img, krn);
-                clock_t end = clock();
+                struct timeval start, end;
 
-                cumulativeSec += ((double) (end - start)) / CLOCKS_PER_SEC;
+                gettimeofday(&start, NULL);
+                res = process(img, krn);
+                gettimeofday(&end, NULL);
+
+                long duration_ms = ((long) end.tv_sec * 1000 + (long) end.tv_usec / 1000) -
+                                   ((long) start.tv_sec * 1000 + (long) start.tv_usec / 1000);
+
+                cumulative_ms += duration_ms;
                 printf("For kernel dimension = %d on image %d, computation time is %f seconds\n", k, imageIndex,
-                       ((double) (end - start)) / CLOCKS_PER_SEC);
+                       (double) duration_ms / 1000);
             }
 
             char *outFilename = (char *) malloc(sizeof(char) * 100);
@@ -78,10 +83,10 @@ int main() {
             free(outFilename);
         }
 
-        double meanTime = cumulativeSec / (REPETITIONS * IMAGE_QUANTITY);
+        long meanTime = cumulative_ms / (REPETITIONS * IMAGE_QUANTITY);
         kDim[k - KERNEL_DIM_MIN] = k;
-        times[k - KERNEL_DIM_MIN] = meanTime;
-        printf("For kernel dimension = %d, MEAN computation time is %f seconds\n", k, meanTime);
+        times[k - KERNEL_DIM_MIN] = (double) meanTime / 1000;
+        printf("For kernel dimension = %d, MEAN computation time is %f seconds\n", k, (double) meanTime / 1000);
 
         Kernel_delete(krn);
     }
