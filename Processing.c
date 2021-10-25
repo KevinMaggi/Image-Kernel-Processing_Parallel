@@ -11,17 +11,10 @@ Image *process(Image *img, Kernel *krn) {
     int kCenter = krn->size / 2;
     int dx, dy, px, py;
 
-    // Choose one of the two following blocks respectively for serialized and nested fors
-#pragma omp parallel for default(none) shared(img, krn, res) firstprivate(kCenter) private(newVal, dx, dy, px, py) num_threads(4)
-    for (int i = 0; i < img->height * img->width * img->channels; i++) {{{  // auto balancing brackets between the two alternatives
-                int ix = (i / img->channels) % img->width;
-                int iy = i / (img->width * img->channels);
-                int ic = i % img->channels;
-
-//#pragma omp parallel for default(none) shared(img, krn, res) firstprivate(kCenter) private(newVal, dx, dy, px, py) schedule(dynamic) num_threads(5)
-//    for (int iy = 0; iy < img->height; iy++) {
-//        for (int ix = 0; ix < img->width; ix++) {
-//            for (int ic = 0; ic < img->channels; ic++) {
+#pragma omp parallel for default(none) shared(img, krn, res) firstprivate(kCenter) private(newVal, dx, dy, px, py) //schedule(dynamic) num_threads(4)
+    for (int iy = 0; iy < img->height; iy++) {
+        for (int ix = 0; ix < img->width; ix++) {
+            for (int ic = 0; ic < img->channels; ic++) {
 
                 // vars "i?" identify image's element
                 newVal = 0;
