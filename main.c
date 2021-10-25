@@ -10,19 +10,19 @@
 /**
  * Min value of kernel dimension to test (MUST be odd)
  */
-const int KERNEL_DIM_MIN = 19;
+const int KERNEL_DIM_MIN = 7;
 /**
  * Max value of kernel dimension to test (MUST be odd)
  */
-const int KERNEL_DIM_MAX = 19;
+const int KERNEL_DIM_MAX = 25;
 /**
  * Step on values of kernel dimension (MUST be even)
  */
-const int KERNEL_DIM_STEP = 2;
+const int KERNEL_DIM_STEP = 6;
 /**
  * Image dimension to test: 4K, 5K, 6K or 7K
  */
-const char IMAGE_DIMENSION[] = "7K";
+const char IMAGE_DIMENSION[] = "6K";
 /**
  * Number of image of each dimension to test (max 3)
  */
@@ -51,7 +51,7 @@ int main() {
         Kernel *krn = Kernel_gaussianBlur(k);
         for (int imageIndex = 1; imageIndex <= IMAGE_QUANTITY; imageIndex++) {
             char *inFilename = (char *) malloc(sizeof(char) * 100);
-            sprintf(inFilename, "/home/kevin/CLionProjects/Image_Kernel_Processing/Image/Input/%s-%d.jpg",
+            sprintf(inFilename, "/home/kevin/CLionProjects/Image_Kernel_Processing_OpenMP/Image/Input/%s-%d.jpg",
                     IMAGE_DIMENSION, imageIndex);
             Image *img = loadJPEG(inFilename);
             Image *res = NULL;
@@ -73,7 +73,7 @@ int main() {
             }
 
             char *outFilename = (char *) malloc(sizeof(char) * 100);
-            sprintf(outFilename, "/home/kevin/CLionProjects/Image_Kernel_Processing/Image/Output/%s-%d-processed%d.png",
+            sprintf(outFilename, "/home/kevin/CLionProjects/Image_Kernel_Processing_OpenMP/Image/Output/%s-%d-processed%d.png",
                     IMAGE_DIMENSION, imageIndex, k);
             savePNG(outFilename, res);
 
@@ -92,7 +92,7 @@ int main() {
     }
 
     char *filename = (char *) malloc(sizeof(char) * 100);
-    sprintf(filename, "/home/kevin/CLionProjects/Image_Kernel_Processing/Image/Output/Times/%sExecTimes.txt",
+    sprintf(filename, "/home/kevin/CLionProjects/Image_Kernel_Processing_OpenMP/Image/Output/Times/%sExecTimes.txt",
             IMAGE_DIMENSION);
     saveTextFile(kDim, times, filename);
 
