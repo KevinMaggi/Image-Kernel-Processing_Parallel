@@ -51,7 +51,7 @@ int main() {
         Kernel *krn = Kernel_gaussianBlur(k);
         for (int imageIndex = 1; imageIndex <= IMAGE_QUANTITY; imageIndex++) {
             char *inFilename = (char *) malloc(sizeof(char) * 100);
-            sprintf(inFilename, "/home/kevin/CLionProjects/Image_Kernel_Processing_OpenMP/Image/Input/%s-%d.jpg",
+            sprintf(inFilename, "/home/kevin/CLionProjects/Image_Kernel_Processing-OpenMP/Image/Input/%s-%d.jpg",
                     IMAGE_DIMENSION, imageIndex);
             Image *img = loadJPEG(inFilename);
             Image *res = NULL;
@@ -73,7 +73,7 @@ int main() {
             }
 
             char *outFilename = (char *) malloc(sizeof(char) * 100);
-            sprintf(outFilename, "/home/kevin/CLionProjects/Image_Kernel_Processing_OpenMP/Image/Output/%s-%d-processed%d.png",
+            sprintf(outFilename, "/home/kevin/CLionProjects/Image_Kernel_Processing-OpenMP/Image/Output/%s-%d-processed%d.png",
                     IMAGE_DIMENSION, imageIndex, k);
             savePNG(outFilename, res);
 
@@ -92,7 +92,7 @@ int main() {
     }
 
     char *filename = (char *) malloc(sizeof(char) * 100);
-    sprintf(filename, "/home/kevin/CLionProjects/Image_Kernel_Processing_OpenMP/Image/Output/Times/%sExecTimes.txt",
+    sprintf(filename, "/home/kevin/CLionProjects/Image_Kernel_Processing-OpenMP/Image/Output/Times/%sExecTimes.txt",
             IMAGE_DIMENSION);
     saveTextFile(kDim, times, filename);
 
